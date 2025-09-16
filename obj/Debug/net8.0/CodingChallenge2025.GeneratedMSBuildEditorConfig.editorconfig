@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = CodingChallenge2025
-build_property.ProjectDir = /Users/ianryder/CodingChallenge2025/CodingChallenge2025/
+build_property.ProjectDir = /Applications/XAMPP/xamppfiles/htdocs/CodingChallenge2025/challenges2025/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

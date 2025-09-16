@@ -18,6 +18,7 @@ class Program
         Console.WriteLine(" 2 - Add numbers");
         Console.WriteLine(" 3 - Add numbers (mults of 3 & 5)");
         Console.WriteLine(" 4 - Times Table");
+        Console.WriteLine(" 5 - Nunmber Guesser");
         Console.WriteLine(" 0 - Exit\n");
         Console.ResetColor();
 
@@ -131,6 +132,43 @@ class Program
                     {
                         Console.Write($"|{i * j,3}");
                     }
+                }
+            }
+        }
+        // 5 - number guesser ###################################
+        else if (programme == "5")
+        {
+            int rando = new Random().Next(1, 1001);
+            int guess = 0;
+            int attempts = 0;
+            Console.WriteLine("\nI'm thinking of a number between 1 and 1000. Can you guess it?");
+            while (guess != rando)
+            {
+                Console.ResetColor();
+                Console.Write("Your guess: ");
+                if (int.TryParse(Console.ReadLine(), out guess))
+                {
+                    attempts++;
+                    if (guess < rando)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("\nToo low! Try again.");
+                    }
+                    else if (guess > rando)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("\nToo high! Try again.");
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        output = $"🎉 Correct! The number was {rando}. You guessed it in {attempts} attempts on {currentDate:d} at {currentDate:t}.";
+                    }
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("⚠️ Please enter a valid number.");
                 }
             }
         }

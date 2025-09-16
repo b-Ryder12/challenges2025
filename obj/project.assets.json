@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/ianryder/CodingChallenge2025/CodingChallenge2025/CodingChallenge2025.csproj",
+      "projectUniqueName": "/Applications/XAMPP/xamppfiles/htdocs/CodingChallenge2025/challenges2025/CodingChallenge2025.csproj",
       "projectName": "CodingChallenge2025",
-      "projectPath": "/Users/ianryder/CodingChallenge2025/CodingChallenge2025/CodingChallenge2025.csproj",
+      "projectPath": "/Applications/XAMPP/xamppfiles/htdocs/CodingChallenge2025/challenges2025/CodingChallenge2025.csproj",
       "packagesPath": "/Users/ianryder/.nuget/packages/",
-      "outputPath": "/Users/ianryder/CodingChallenge2025/CodingChallenge2025/obj/",
+      "outputPath": "/Applications/XAMPP/xamppfiles/htdocs/CodingChallenge2025/challenges2025/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/ianryder/.nuget/NuGet/NuGet.Config"
