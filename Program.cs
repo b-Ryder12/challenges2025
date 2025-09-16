@@ -191,23 +191,25 @@ class Program
             Console.ForegroundColor = ConsoleColor.DarkRed;
             output = $"❓ Huh? Invalid choice — on {currentDate:d} at {currentDate:t}!";
         }
-
+        
         Console.WriteLine($"\n{output}");
         Console.ResetColor();
-
+        
         Console.ForegroundColor = ConsoleColor.DarkGray;
         Console.Write("\nPress Enter ⏎ to restart...");
         Console.ResetColor();
         Console.ReadLine();
         Main(); // restart the programme
     }
-
+    
     static void PlayWaitroseRush()
     {
         Console.Clear();
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
         Console.WriteLine("=== Waitrose Rush — Premium Pack & Dash ===");
+        Console.ResetColor();
         Console.WriteLine("Fulfil each customer's order quickly and accurately!");
-        Console.WriteLine("Type the item exactly as shown, press Enter after each.");
+        Console.WriteLine("Choose the COLOUR-CODED item number to pack it.");
         Console.WriteLine("Earn points for correct packing, lose points for mistakes.\n");
         Console.WriteLine("Press any key to begin...");
         Console.ReadKey(true);
@@ -217,7 +219,7 @@ class Program
         {
             "Sourdough loaf",
             "Organic full fat milk",
-            "Smoked salmon",
+            "Scottish smoked salmon",
             "Waitrose No 1 dark chocolate",
             "Avocado",
             "British strawberries",
@@ -232,56 +234,88 @@ class Program
             "Mini eggs",
             "Extra virgin olive oil hummous"
         };
-
+        
+        // Fun colours to pick from
+        var colours = new List<ConsoleColor>
+        {
+            ConsoleColor.Green,
+            ConsoleColor.Cyan,
+            ConsoleColor.Magenta,
+            ConsoleColor.Yellow,
+            ConsoleColor.Blue,
+            ConsoleColor.DarkRed,
+            ConsoleColor.DarkCyan,
+            ConsoleColor.DarkYellow
+        };
+        
         int score = 0;
         int rounds = 3;
-
+        
         for (int round = 1; round <= rounds; round++)
         {
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine($"Round {round}/{rounds}");
+            Console.ResetColor();
             
-            // Pick 3 random items for the order
-            var order = catalogue.OrderBy(x => rnd.Next()).Take(3).ToList();
-            Console.WriteLine("Customer order: " + string.Join(", ", order));
-            Console.WriteLine("Type each item to pack it!\n");
+            // Pick 4 random items for the order
+            var order = catalogue.OrderBy(x => rnd.Next()).Take(4).ToList();
             
-            var remaining = new HashSet<string>(order, StringComparer.OrdinalIgnoreCase);
+            Console.WriteLine("Customer order (pack in ANY order):\n");
+            
+            // Assign numbers & colours
+            var itemColours = new Dictionary<int, (string Item, ConsoleColor Col)>();
+            for (int i = 0; i < order.Count; i++)
+            {
+                var col = colours[rnd.Next(colours.Count)];
+                itemColours[i + 1] = (order[i], col);
+                
+                Console.ForegroundColor = col;
+                Console.WriteLine($"[{i + 1}] {order[i]}");
+                Console.ResetColor();
+            }
+            
+            var remaining = new HashSet<int>(itemColours.Keys);
             
             while (remaining.Any())
             {
-                Console.Write("> ");
+                Console.Write("\nChoose item number to pack: ");
                 string input = Console.ReadLine() ?? "";
                 
-                if (remaining.Contains(input, StringComparer.OrdinalIgnoreCase))
+                if (int.TryParse(input, out int choice) && remaining.Contains(choice))
                 {
+                    var (item, col) = itemColours[choice];
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Packed \"{input}\" ✅ +10 points");
+                    Console.WriteLine($"Packed \"{item}\" ✅ +10 points");
                     Console.ResetColor();
                     score += 10;
-                    remaining.Remove(input);
+                    remaining.Remove(choice);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\"{input}\" is not on the order ❌ -5 points");
+                    Console.WriteLine($"Invalid choice ❌ -5 points");
                     Console.ResetColor();
                     score -= 5;
                 }
             }
             
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"\nRound {round} complete! Current score: {score}\n");
+            Console.ResetColor();
             Console.WriteLine("Press any key for the next round...");
             Console.ReadKey(true);
         }
         
         Console.Clear();
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
         Console.WriteLine("=== Shift Summary ===");
+        Console.ResetColor();
         Console.WriteLine($"Final score: {score}");
         
-        if (score >= 80)
+        if (score >= 100)
             Console.WriteLine("A+ — The boutique's favourite packer. Extra biscuits in the break room!");
-        else if (score >= 60)
+        else if (score >= 70)
             Console.WriteLine("B — Solid shift, plenty of bonus coupons.");
         else if (score >= 40)
             Console.WriteLine("C — Some mistakes, but the salads survived.");
