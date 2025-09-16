@@ -210,43 +210,34 @@ class Program
         Console.ResetColor();
         Console.WriteLine("Fulfil each customer's order quickly and accurately!");
         Console.WriteLine("Choose the COLOUR-CODED item number to pack it.");
-        Console.WriteLine("Earn points for correct packing, lose points for mistakes.\n");
-        Console.WriteLine("Press any key to begin...");
+        Console.WriteLine("⚠️ Beware: one item will be cursed RED — packing it loses points!");
+        Console.WriteLine("\nPress any key to begin...");
         Console.ReadKey(true);
         
         var rnd = new Random();
-        var catalogue = new List<string>
+
+        // Permanent Waitrose-esque brand colours
+        var baseColours = new Dictionary<string, ConsoleColor>(StringComparer.OrdinalIgnoreCase)
         {
-            "Sourdough loaf",
-            "Organic full fat milk",
-            "Scottish smoked salmon",
-            "Waitrose No 1 dark chocolate",
-            "Avocado",
-            "British strawberries",
-            "Artisan butter",
-            "Alpine cheese wedge",
-            "Extra virgin olive oil",
-            "Mango chunks 250g",
-            "Miso easy soup packets x6",
-            "Orangina",
-            "Maltesers share bag",
-            "Snowballs",
-            "Mini eggs",
-            "Extra virgin olive oil hummous"
+            { "Sourdough loaf", ConsoleColor.DarkYellow },
+            { "Organic full fat milk", ConsoleColor.White },
+            { "Scottish smoked salmon", ConsoleColor.DarkYellow },
+            { "Waitrose No 1 dark chocolate", ConsoleColor.DarkMagenta },
+            { "Avocado", ConsoleColor.Green },
+            { "British strawberries", ConsoleColor.Magenta },
+            { "Artisan butter", ConsoleColor.Yellow },
+            { "Alpine cheese wedge", ConsoleColor.DarkCyan },
+            { "Extra virgin olive oil", ConsoleColor.DarkGreen },
+            { "Mango chunks 250g", ConsoleColor.Yellow },
+            { "Miso easy soup packets x6", ConsoleColor.Magenta },
+            { "Orangina", ConsoleColor.DarkBlue },
+            { "Maltesers share bag", ConsoleColor.DarkRed },
+            { "Snowballs", ConsoleColor.White },
+            { "Mini eggs", ConsoleColor.DarkYellow },
+            { "Extra virgin olive oil hummous", ConsoleColor.Green }
         };
         
-        // Fun colours to pick from
-        var colours = new List<ConsoleColor>
-        {
-            ConsoleColor.Green,
-            ConsoleColor.Cyan,
-            ConsoleColor.Magenta,
-            ConsoleColor.Yellow,
-            ConsoleColor.Blue,
-            ConsoleColor.DarkRed,
-            ConsoleColor.DarkCyan,
-            ConsoleColor.DarkYellow
-        };
+        var catalogue = baseColours.Keys.ToList();
         
         int score = 0;
         int rounds = 3;
@@ -258,24 +249,28 @@ class Program
             Console.WriteLine($"Round {round}/{rounds}");
             Console.ResetColor();
             
-            // Pick 4 random items for the order
+            // Pick 4 random items
             var order = catalogue.OrderBy(x => rnd.Next()).Take(4).ToList();
+            
+            // Randomly curse ONE item red
+            string cursedItem = order[rnd.Next(order.Count)];
             
             Console.WriteLine("Customer order (pack in ANY order):\n");
             
-            // Assign numbers & colours
-            var itemColours = new Dictionary<int, (string Item, ConsoleColor Col)>();
+            // Assign item numbers
+            var itemMap = new Dictionary<int, string>();
             for (int i = 0; i < order.Count; i++)
             {
-                var col = colours[rnd.Next(colours.Count)];
-                itemColours[i + 1] = (order[i], col);
+                string item = order[i];
+                ConsoleColor col = (item == cursedItem) ? ConsoleColor.Red : baseColours[item];
+                itemMap[i + 1] = item;
                 
                 Console.ForegroundColor = col;
-                Console.WriteLine($"[{i + 1}] {order[i]}");
+                Console.WriteLine($"[{i + 1}] {item}");
                 Console.ResetColor();
             }
             
-            var remaining = new HashSet<int>(itemColours.Keys);
+            var remaining = new HashSet<int>(itemMap.Keys);
             
             while (remaining.Any())
             {
@@ -284,11 +279,23 @@ class Program
                 
                 if (int.TryParse(input, out int choice) && remaining.Contains(choice))
                 {
-                    var (item, col) = itemColours[choice];
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Packed \"{item}\" ✅ +10 points");
-                    Console.ResetColor();
-                    score += 10;
+                    string item = itemMap[choice];
+                    
+                    if (item == cursedItem)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Oh no! The {item} was cursed RED ❌ -10 points");
+                        Console.ResetColor();
+                        score -= 10;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"Packed \"{item}\" ✅ +10 points");
+                        Console.ResetColor();
+                        score += 10;
+                    }
+
                     remaining.Remove(choice);
                 }
                 else
