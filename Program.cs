@@ -7,8 +7,6 @@ class Program
     static void Main()
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("══════════════════════════════════════");
-        Console.WriteLine("   🐺 Welcome to the Sigma Console 🐺");
         Console.WriteLine("══════════════════════════════════════\n");
         Console.ResetColor();
 
