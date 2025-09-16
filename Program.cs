@@ -7,9 +7,12 @@ class Program
     static void Main()
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("══════════════════════════════════════\n");
+        Console.WriteLine("");
+        Console.WriteLine("══════════════════════════════════════════════");
+        Console.WriteLine("   🐺 Welcome to the Super Sigma Console 🐺");
+        Console.WriteLine("══════════════════════════════════════════════\n");
         Console.ResetColor();
-
+        
         Console.WriteLine("Select programme:\n");
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine(" 1 - Greet user");
@@ -19,18 +22,18 @@ class Program
         Console.WriteLine(" 5 - Nunmber Guesser");
         Console.WriteLine(" 0 - Exit\n");
         Console.ResetColor();
-
+        
         var programme = Console.ReadLine();
         var currentDate = DateTime.Now;
         string output = string.Empty; // shared variable for output
-
+        
         // 1 - greet user #####################################
         if (programme == "1")
         {
             Console.Write("What is your name? ");
             var name = Console.ReadLine();
-            
-            if ((name == "Bob") || (name == "Alice"))
+
+            if ((name == "Benjamin") || (name == "Mark") || (name == "Evie-May"))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 output = $"✨ Hello, {name}, on {currentDate:d} at {currentDate:t}! ✨";
@@ -56,16 +59,16 @@ class Program
                         numbers.Add(i);
                     }
                 }
-                
+
                 Console.WriteLine("\nWould you like to:");
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(" + (A)dd them up");
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(" × (M)ultiply them");
                 Console.ResetColor();
-                
+
                 var choice = Console.ReadLine()?.Trim().ToUpper();
-                
+
                 if (choice == "M")
                 {
                     BigInteger product = 1;
@@ -103,7 +106,7 @@ class Program
             Console.ResetColor();
             Console.WriteLine("\nYour choice: ");
             var list = Console.ReadLine();
-            
+
             if (list == "1")
             {
                 for (int i = 1; i <= 12; i++)
@@ -181,12 +184,12 @@ class Program
             Console.ForegroundColor = ConsoleColor.DarkRed;
             output = $"❓ Huh? Invalid choice — on {currentDate:d} at {currentDate:t}!";
         }
-
+        
         Console.WriteLine($"\n{output}");
         Console.ResetColor();
-
+        
         Console.ForegroundColor = ConsoleColor.DarkGray;
-        Console.Write("\nPress Enter to restart...");
+        Console.Write("\nPress Enter ⏎ to restart...");
         Console.ResetColor();
         Console.ReadLine();
         Main(); // restart the programme
