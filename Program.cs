@@ -173,6 +173,12 @@ class Program
                 }
             }
         }
+        // 6 - number guesser ###################################
+        else if (programme == "6")
+        {
+            // Waitrose minigame
+            PlayWaitroseRush();
+        }
         // 0 - exit ###########################################
         else if (programme == "0")
         {
@@ -193,5 +199,95 @@ class Program
         Console.ResetColor();
         Console.ReadLine();
         Main(); // restart the programme
+    }
+
+    static void PlayWaitroseRush()
+    {
+        Console.Clear();
+        Console.WriteLine("=== Waitrose Rush — Premium Pack & Dash ===");
+        Console.WriteLine("Fulfil each customer's order quickly and accurately!");
+        Console.WriteLine("Type the item exactly as shown, press Enter after each.");
+        Console.WriteLine("Earn points for correct packing, lose points for mistakes.\n");
+        Console.WriteLine("Press any key to begin...");
+        Console.ReadKey(true);
+        
+        var rnd = new Random();
+        var catalogue = new List<string>
+        {
+            "Sourdough loaf",
+            "Organic full fat milk",
+            "Smoked salmon",
+            "Waitrose No 1 dark chocolate",
+            "Avocado",
+            "British strawberries",
+            "Artisan butter",
+            "Alpine cheese wedge",
+            "Extra virgin olive oil",
+            "Mango chunks 250g",
+            "Miso easy soup packets x6",
+            "Orangina",
+            "Maltesers share bag",
+            "Snowballs",
+            "Mini eggs",
+            "Extra virgin olive oil hummous"
+        };
+
+        int score = 0;
+        int rounds = 3;
+
+        for (int round = 1; round <= rounds; round++)
+        {
+            Console.Clear();
+            Console.WriteLine($"Round {round}/{rounds}");
+            
+            // Pick 3 random items for the order
+            var order = catalogue.OrderBy(x => rnd.Next()).Take(3).ToList();
+            Console.WriteLine("Customer order: " + string.Join(", ", order));
+            Console.WriteLine("Type each item to pack it!\n");
+            
+            var remaining = new HashSet<string>(order, StringComparer.OrdinalIgnoreCase);
+            
+            while (remaining.Any())
+            {
+                Console.Write("> ");
+                string input = Console.ReadLine() ?? "";
+                
+                if (remaining.Contains(input, StringComparer.OrdinalIgnoreCase))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Packed \"{input}\" ✅ +10 points");
+                    Console.ResetColor();
+                    score += 10;
+                    remaining.Remove(input);
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"\"{input}\" is not on the order ❌ -5 points");
+                    Console.ResetColor();
+                    score -= 5;
+                }
+            }
+            
+            Console.WriteLine($"\nRound {round} complete! Current score: {score}\n");
+            Console.WriteLine("Press any key for the next round...");
+            Console.ReadKey(true);
+        }
+        
+        Console.Clear();
+        Console.WriteLine("=== Shift Summary ===");
+        Console.WriteLine($"Final score: {score}");
+        
+        if (score >= 80)
+            Console.WriteLine("A+ — The boutique's favourite packer. Extra biscuits in the break room!");
+        else if (score >= 60)
+            Console.WriteLine("B — Solid shift, plenty of bonus coupons.");
+        else if (score >= 40)
+            Console.WriteLine("C — Some mistakes, but the salads survived.");
+        else
+            Console.WriteLine("D — Oh dear. The salads will remember this.");
+            
+        Console.WriteLine("\nPress any key to return to the main menu...");
+        Console.ReadKey(true);
     }
 }
