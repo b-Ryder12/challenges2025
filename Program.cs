@@ -12,21 +12,22 @@ class Program
         Console.WriteLine("   🐺 Welcome to the Super Sigma Console 🐺");
         Console.WriteLine("══════════════════════════════════════════════\n");
         Console.ResetColor();
-        
+
         Console.WriteLine("Select programme:\n");
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine(" 1 - Greet user");
-        Console.WriteLine(" 2 - Add numbers");
-        Console.WriteLine(" 3 - Add numbers (mults of 3 & 5)");
-        Console.WriteLine(" 4 - Times Table");
-        Console.WriteLine(" 5 - Nunmber Guesser");
-        Console.WriteLine(" 0 - Exit\n");
+        Console.WriteLine(" 1 - 👋 Greetings");
+        Console.WriteLine(" 2 - ➕ Numbers");
+        Console.WriteLine(" 3 - ➕ Numbers (mults of 3 & 5)");
+        Console.WriteLine(" 4 - 📚 Times Table");
+        Console.WriteLine(" 5 - 🎲 Number Guesser");
+        Console.WriteLine(" 6 - 🛒 Waitrose Rush");
+        Console.WriteLine(" 0 - 🛑 Exit\n");
         Console.ResetColor();
-        
+
         var programme = Console.ReadLine();
         var currentDate = DateTime.Now;
         string output = string.Empty; // shared variable for output
-        
+
         // 1 - greet user #####################################
         if (programme == "1")
         {
@@ -173,7 +174,7 @@ class Program
                 }
             }
         }
-        // 6 - number guesser ###################################
+        // 6 - Waitrose Rush ###################################
         else if (programme == "6")
         {
             // Waitrose minigame
@@ -190,10 +191,10 @@ class Program
             Console.ForegroundColor = ConsoleColor.DarkRed;
             output = $"❓ Huh? Invalid choice — on {currentDate:d} at {currentDate:t}!";
         }
-        
+
         Console.WriteLine($"\n{output}");
         Console.ResetColor();
-        
+
         Console.ForegroundColor = ConsoleColor.DarkGray;
         Console.Write("\nPress Enter ⏎ to restart...");
         Console.ResetColor();
