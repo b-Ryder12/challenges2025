@@ -216,12 +216,12 @@ class Program
         
         var rnd = new Random();
 
-        // Permanent Waitrose-esque brand colours
+        // Fixed Waitrose-esque brand colours
         var baseColours = new Dictionary<string, ConsoleColor>(StringComparer.OrdinalIgnoreCase)
         {
             { "Sourdough loaf", ConsoleColor.DarkYellow },
             { "Organic full fat milk", ConsoleColor.White },
-            { "Scottish smoked salmon", ConsoleColor.DarkYellow },
+            { "Scottish smoked salmon", ConsoleColor.DarkRed },
             { "Waitrose No 1 dark chocolate", ConsoleColor.DarkMagenta },
             { "Avocado", ConsoleColor.Green },
             { "British strawberries", ConsoleColor.Magenta },
@@ -252,7 +252,7 @@ class Program
             // Pick 4 random items
             var order = catalogue.OrderBy(x => rnd.Next()).Take(4).ToList();
             
-            // Randomly curse ONE item red
+            // Randomly curse 1 item red
             string cursedItem = order[rnd.Next(order.Count)];
             
             Console.WriteLine("Customer order (pack in ANY order):\n");
@@ -270,14 +270,17 @@ class Program
                 Console.ResetColor();
             }
             
-            var remaining = new HashSet<int>(itemMap.Keys);
+            // Items left that are NOT cursed
+            var remaining = new HashSet<int>(itemMap
+                .Where(kvp => kvp.Value != cursedItem)
+                .Select(kvp => kvp.Key));
             
             while (remaining.Any())
             {
                 Console.Write("\nChoose item number to pack: ");
                 string input = Console.ReadLine() ?? "";
                 
-                if (int.TryParse(input, out int choice) && remaining.Contains(choice))
+                if (int.TryParse(input, out int choice) && itemMap.ContainsKey(choice))
                 {
                     string item = itemMap[choice];
                     
@@ -287,16 +290,22 @@ class Program
                         Console.WriteLine($"Oh no! The {item} was cursed RED ❌ -10 points");
                         Console.ResetColor();
                         score -= 10;
+                        // ❌ Do NOT remove cursed item from remaining
                     }
-                    else
+                    else if (remaining.Contains(choice))
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine($"Packed \"{item}\" ✅ +10 points");
                         Console.ResetColor();
                         score += 10;
+                        remaining.Remove(choice); // ✅ Only remove safe items
                     }
-
-                    remaining.Remove(choice);
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"Already packed {item}!");
+                        Console.ResetColor();
+                    }
                 }
                 else
                 {
