@@ -246,7 +246,9 @@ class Program
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine($"Round {round}/{rounds}");
+            Console.WriteLine($"╔═══════════════════════════════════╗");
+            Console.WriteLine($"║          🛒 ROUND {round}/{rounds} 🛒          ║");
+            Console.WriteLine($"╚═══════════════════════════════════╝");
             Console.ResetColor();
             
             // Pick 4 random items
