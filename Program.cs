@@ -215,7 +215,7 @@ class Program
         Console.ReadKey(true);
         
         var rnd = new Random();
-
+        
         // Fixed Waitrose-esque brand colours
         var baseColours = new Dictionary<string, ConsoleColor>(StringComparer.OrdinalIgnoreCase)
         {
@@ -257,16 +257,20 @@ class Program
             
             Console.WriteLine("Customer order (pack in ANY order):\n");
             
+            // Generate 4 random distinct numbers for labelling items
+            var numberPool = Enumerable.Range(1, 20).OrderBy(x => rnd.Next()).Take(order.Count).ToList();
+            
             // Assign item numbers
             var itemMap = new Dictionary<int, string>();
             for (int i = 0; i < order.Count; i++)
             {
                 string item = order[i];
+                int num = numberPool[i]; // random number
                 ConsoleColor col = (item == cursedItem) ? ConsoleColor.Red : baseColours[item];
-                itemMap[i + 1] = item;
+                itemMap[num] = item;
                 
                 Console.ForegroundColor = col;
-                Console.WriteLine($"[{i + 1}] {item}");
+                Console.WriteLine($"[{num}] {item}");
                 Console.ResetColor();
             }
             
