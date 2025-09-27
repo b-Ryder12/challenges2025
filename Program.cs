@@ -230,7 +230,7 @@ class Program
         Console.ForegroundColor = ConsoleColor.DarkGreen; Console.WriteLine("║");
         Console.WriteLine("╚═══════════════════════════════════════════╝");
         Console.ResetColor();
-
+        
         Console.WriteLine("\nFulfil each customer's order quickly and accurately!");
         Console.WriteLine("⚠️ Beware: cursed RED items lose points!");
         Console.WriteLine("✅ Correct packs give points, streaks give bonuses!");
@@ -301,14 +301,58 @@ class Program
                 Console.ResetColor();
             }
             
-            // Items left that are NOT cursed
+            // --- Timer display helper ---
+            static void ShowTimer(TimeSpan totalTime, DateTime startTime, int barWidth, int line, CancellationToken token)
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    var elapsed = DateTime.Now - startTime;
+                    var remaining = totalTime - elapsed;
+                    if (remaining < TimeSpan.Zero) remaining = TimeSpan.Zero;
+                    
+                    double fraction = remaining.TotalSeconds / totalTime.TotalSeconds;
+                    int filledBlocks = (int)Math.Round(fraction * barWidth);
+                    int emptyBlocks = barWidth - filledBlocks;
+                    
+                    string bar = "[" + new string('█', filledBlocks) + new string('░', emptyBlocks) + $"] {remaining.Seconds}s ";
+                    
+                    // overwrite timer line
+                    Console.SetCursorPosition(0, line);
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write(bar.PadRight(barWidth + 10));
+                    Console.ResetColor();
+                    
+                    Thread.Sleep(200);
+                }
+            }
+            
+            // remaining non-cursed items
             var remaining = new HashSet<int>(itemMap
                 .Where(kvp => kvp.Value != cursedItem)
                 .Select(kvp => kvp.Key));
             
-            while (remaining.Any())
+            var roundTime = TimeSpan.FromSeconds(10);
+            var roundStart = DateTime.Now;
+            
+            // remember where timer should draw
+            int timerLine = Console.CursorTop; 
+            Console.WriteLine(); // space for timer line
+            Console.WriteLine(); // EXTRA space for input prompt line 👈
+            
+            // start timer thread
+            var cts = new CancellationTokenSource();
+            Task.Run(() => ShowTimer(roundTime, roundStart, 20, timerLine, cts.Token));
+            
+            // packing loop
+            while (remaining.Any() && DateTime.Now - roundStart < roundTime)
             {
-                Console.Write("\nChoose item number to pack: ");
+                int inputLine = timerLine + 2;  // 👈 skip 2 lines: 1 for timer, 1 for prompt
+                
+                Console.SetCursorPosition(0, inputLine);
+                Console.Write(new string(' ', Console.BufferWidth)); // clear old prompt
+                Console.SetCursorPosition(0, inputLine);
+                Console.Write("Choose item number to pack: ");
+                
                 string input = Console.ReadLine() ?? "";
                 
                 if (int.TryParse(input, out int choice) && itemMap.ContainsKey(choice))
@@ -356,6 +400,9 @@ class Program
                     score -= 5;
                 }
             }
+            
+            // stop timer
+            cts.Cancel();
             
             // Missed items penalty
             foreach (var miss in remaining)
