@@ -1,39 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics; // for BigInteger if needed
+using System.Numerics;
 
 class Program
 {
     static void Main()
     {
+        Console.Clear();
+        
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("");
         Console.WriteLine("══════════════════════════════════════════════");
         Console.WriteLine("   🐺 Welcome to the Super Sigma Console 🐺");
         Console.WriteLine("══════════════════════════════════════════════\n");
         Console.ResetColor();
-
+        
         Console.WriteLine("Select programme:\n");
+        
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("  ༺ ~                                    ~ ༻");
+        Console.Write("  ꒰");
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine(" 1 - 👋 Greetings");
-        Console.WriteLine(" 2 - ➕ Numbers");
-        Console.WriteLine(" 3 - ➕ Numbers (mults of 3 & 5)");
-        Console.WriteLine(" 4 - 📚 Times Table");
-        Console.WriteLine(" 5 - 🎲 Number Guesser");
-        Console.WriteLine(" 6 - 🛒 Waitrose Rush");
-        Console.WriteLine(" 0 - 🛑 Exit\n");
+        Console.Write("1 - 👋 Greetings");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("                       ꒱");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("    2 - ➕ Numbers");
+        Console.WriteLine("    3 - ➕ Numbers (mults of 3 & 5)");
+        Console.WriteLine("    4 - 📚 Times Table");
+        Console.WriteLine("    5 - 🎲 Number Guesser");
+        Console.WriteLine("    6 - 🛒 Waitrose Rush");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("  ꒰");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("0 - 🛑 Exit");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("                            ꒱");
+        Console.WriteLine("  ༺ ~                                    ~ ༻\n");
         Console.ResetColor();
-
+        
         var programme = Console.ReadLine();
         var currentDate = DateTime.Now;
         string output = string.Empty; // shared variable for output
-
+        
         // 1 - greet user #####################################
         if (programme == "1")
         {
             Console.Write("What is your name? ");
             var name = Console.ReadLine();
-
+            
             if ((name == "Benjamin") || (name == "Mark") || (name == "Evie-May"))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -69,7 +84,7 @@ class Program
                 Console.ResetColor();
 
                 var choice = Console.ReadLine()?.Trim().ToUpper();
-
+                
                 if (choice == "M")
                 {
                     BigInteger product = 1;
@@ -206,11 +221,12 @@ class Program
     {
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.DarkGreen;
-        Console.WriteLine("=== Waitrose Rush — Premium Pack & Dash ===");
+        Console.WriteLine("    ===-==-=-  🛒 Waitrose Rush 🛒  -=-==-===");
+        Console.WriteLine("     === == =  Premium Pack & Dash  = == === ");
         Console.ResetColor();
-        Console.WriteLine("Fulfil each customer's order quickly and accurately!");
-        Console.WriteLine("Choose the COLOUR-CODED item number to pack it.");
-        Console.WriteLine("⚠️ Beware: one item will be cursed RED — packing it loses points!");
+        Console.WriteLine("\nFulfil each customer's order quickly and accurately!");
+        Console.WriteLine("⚠️ Beware: cursed RED items lose points!");
+        Console.WriteLine("✅ Correct packs give points, streaks give bonuses!");
         Console.WriteLine("\nPress any key to begin...");
         Console.ReadKey(true);
         
@@ -240,6 +256,7 @@ class Program
         var catalogue = baseColours.Keys.ToList();
         
         int score = 0;
+        int streak = 0;
         int rounds = 3;
         
         for (int round = 1; round <= rounds; round++)
@@ -295,21 +312,31 @@ class Program
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Oh no! The {item} was cursed RED ❌ -10 points");
                         Console.ResetColor();
-                        score -= 10;
+                        score -= 40;
+                        streak = 0;
                         // ❌ Do NOT remove cursed item from remaining
                     }
                     else if (remaining.Contains(choice))
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"Packed \"{item}\" ✅ +10 points");
+                        int bonus = 10 + streak * 2;
+                        Console.WriteLine($" 🛍️ Packed {item} ✅ +{bonus} points");
                         Console.ResetColor();
-                        score += 10;
+                        score += bonus;
+                        streak++;
                         remaining.Remove(choice); // ✅ Only remove safe items
+                        
+                        if (streak > 1)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine($"🔥 Streak x{streak}! Bonus active!");
+                            Console.ResetColor();
+                        }
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine($"Already packed {item}!");
+                        Console.WriteLine($" 😬 Already packed {item}!");
                         Console.ResetColor();
                     }
                 }
@@ -322,27 +349,38 @@ class Program
                 }
             }
             
+            // Missed items penalty
+            foreach (var miss in remaining)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"⏰ Missed {itemMap[miss]}! -5 points");
+                Console.ResetColor();
+                score -= 5;
+            }
+            
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"\nRound {round} complete! Current score: {score}\n");
+            Console.WriteLine($"\n🏁 Round {round} complete! Current score: {score}\n");
             Console.ResetColor();
-            Console.WriteLine("Press any key for the next round...");
+            Console.WriteLine("Press any key to begin next round...");
             Console.ReadKey(true);
         }
         
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.DarkGreen;
-        Console.WriteLine("=== Shift Summary ===");
+        Console.WriteLine($"╔═══════════════════════════════════════╗");
+        Console.WriteLine($"║          🛒 Shift Summary 🛒          ║");
+        Console.WriteLine($"╚═══════════════════════════════════════╝");
         Console.ResetColor();
         Console.WriteLine($"Final score: {score}");
         
-        if (score >= 100)
-            Console.WriteLine("A+ — The boutique's favourite packer. Extra biscuits in the break room!");
-        else if (score >= 70)
-            Console.WriteLine("B — Solid shift, plenty of bonus coupons.");
+        if (score >= 120)
+            Console.WriteLine("🏆 A+ — Boutique’s favourite packer. Extra biscuits in the break room!");
+        else if (score >= 80)
+            Console.WriteLine("🥈 B — Solid shift, plenty of bonus coupons.");
         else if (score >= 40)
-            Console.WriteLine("C — Some mistakes, but the salads survived.");
+            Console.WriteLine("🥉 C — Some mistakes, but the salads survived.");
         else
-            Console.WriteLine("D — Oh dear. The salads will remember this.");
+            Console.WriteLine("💩 D — Oh dear. The salads will remember this...");
             
         Console.WriteLine("\nPress any key to return to the main menu...");
         Console.ReadKey(true);
