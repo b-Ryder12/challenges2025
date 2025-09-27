@@ -221,9 +221,16 @@ class Program
     {
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.DarkGreen;
-        Console.WriteLine("    ===-==-=-  🛒 Waitrose Rush 🛒  -=-==-===");
-        Console.WriteLine("     === == =  Premium Pack & Dash  = == === ");
+        Console.WriteLine("╔═══════════════════════════════════════════╗");
+        Console.Write("║"); Console.ForegroundColor = ConsoleColor.White;
+        Console.Write("            🛒 Waitrose Rush 🛒            ");
+        Console.ForegroundColor = ConsoleColor.DarkGreen; Console.WriteLine("║");
+        Console.Write("║"); Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write("         ✨ Premium Pack & Dash ✨         ");
+        Console.ForegroundColor = ConsoleColor.DarkGreen; Console.WriteLine("║");
+        Console.WriteLine("╚═══════════════════════════════════════════╝");
         Console.ResetColor();
+
         Console.WriteLine("\nFulfil each customer's order quickly and accurately!");
         Console.WriteLine("⚠️ Beware: cursed RED items lose points!");
         Console.WriteLine("✅ Correct packs give points, streaks give bonuses!");
@@ -274,7 +281,8 @@ class Program
             // Randomly curse 1 item red
             string cursedItem = order[rnd.Next(order.Count)];
             
-            Console.WriteLine("Customer order (pack in ANY order):\n");
+            Console.WriteLine("You have 10 seconds!");
+            Console.WriteLine("Customer order (pack in any order):\n");
             
             // Generate 4 random distinct numbers for labelling items
             var numberPool = Enumerable.Range(1, 20).OrderBy(x => rnd.Next()).Take(order.Count).ToList();
@@ -366,22 +374,61 @@ class Program
         }
         
         Console.Clear();
-        Console.ForegroundColor = ConsoleColor.DarkGreen;
-        Console.WriteLine($"╔═══════════════════════════════════════╗");
-        Console.WriteLine($"║          🛒 Shift Summary 🛒          ║");
-        Console.WriteLine($"╚═══════════════════════════════════════╝");
-        Console.ResetColor();
-        Console.WriteLine($"Final score: {score}");
         
+        // build box width and content dynamically
+        int boxWidth = 52;
+        string title = "🛒 SHIFT SUMMARY 🛒";
+        string scoreLine = $"Final score: {score}";
+        string rankLine;
+        
+        // choose rank message & colour
         if (score >= 120)
-            Console.WriteLine("🏆 A+ — Boutique’s favourite packer. Extra biscuits in the break room!");
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            rankLine = "🏆 A+ — Boutique’s favourite packer!";
+        }
         else if (score >= 80)
-            Console.WriteLine("🥈 B — Solid shift, plenty of bonus coupons.");
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            rankLine = "🥈 B — Solid shift, plenty of bonus coupons.";
+        }
         else if (score >= 40)
-            Console.WriteLine("🥉 C — Some mistakes, but the salads survived.");
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            rankLine = "🥉 C — Some mistakes, but the salads survived.";
+        }
         else
-            Console.WriteLine("💩 D — Oh dear. The salads will remember this...");
-            
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            rankLine = "💩 D — Oh dear. The salads will remember this...";
+        }
+        
+        // top border
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("╔" + new string('═', boxWidth - 2) + "╗");
+        
+        // title row
+        string titlePadded = title.PadLeft((boxWidth - title.Length) / 2 + title.Length).PadRight(boxWidth - 2);
+        Console.WriteLine($"║{titlePadded}║");
+        
+        // separator
+        Console.WriteLine("╠" + new string('═', boxWidth - 2) + "╣");
+        
+        // score row
+        Console.ResetColor();
+        string scorePadded = scoreLine.PadRight(boxWidth - 3);
+        Console.WriteLine($"║ {scorePadded}║");
+        
+        // rank row
+        string rankPadded = rankLine.PadRight(boxWidth - 3); // account for emoji width
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"║ {rankPadded}║");
+        
+        // bottom border
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("╚" + new string('═', boxWidth - 2) + "╝");
+        
+        Console.ResetColor();
         Console.WriteLine("\nPress any key to return to the main menu...");
         Console.ReadKey(true);
     }
