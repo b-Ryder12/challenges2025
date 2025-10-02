@@ -296,9 +296,24 @@ class Program
                 ConsoleColor col = (item == cursedItem) ? ConsoleColor.Red : baseColours[item];
                 itemMap[num] = item;
                 
-                Console.ForegroundColor = col;
-                Console.WriteLine($"[{num}] {item}");
+                // Stylised item row
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Write("   [");
                 Console.ResetColor();
+                
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(num.ToString("D2")); // two-digit number
+                Console.ResetColor();
+                
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Write("] ");
+                Console.ResetColor();
+                
+                Console.ForegroundColor = col;
+                Console.WriteLine(item);
+                Console.ResetColor();
+                
+                Console.WriteLine(); // extra spacing between items
             }
             
             // --- Timer display helper ---
@@ -319,7 +334,7 @@ class Program
                     // overwrite timer line
                     Console.SetCursorPosition(0, line);
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write(bar.PadRight(barWidth + 10));
+                    Console.Write(bar.PadRight(barWidth + 20));
                     Console.ResetColor();
                     
                     Thread.Sleep(200);
@@ -334,26 +349,35 @@ class Program
             var roundTime = TimeSpan.FromSeconds(10);
             var roundStart = DateTime.Now;
             
-            // remember where timer should draw
-            int timerLine = Console.CursorTop; 
-            Console.WriteLine(); // space for timer line
-            Console.WriteLine(); // EXTRA space for input prompt line 👈
+            // reserve input line (no prompt text yet)
+            int inputLine = Console.CursorTop;
+            Console.WriteLine(); // leave blank for input
+            int timerLine = Console.CursorTop;
+            Console.WriteLine(); // leave blank for timer
             
             // start timer thread
             var cts = new CancellationTokenSource();
             Task.Run(() => ShowTimer(roundTime, roundStart, 20, timerLine, cts.Token));
             
+            string lastInput = "";
+            
             // packing loop
             while (remaining.Any() && DateTime.Now - roundStart < roundTime)
             {
-                int inputLine = timerLine + 2;  // 👈 skip 2 lines: 1 for timer, 1 for prompt
-                
+                // redraw input line
                 Console.SetCursorPosition(0, inputLine);
-                Console.Write(new string(' ', Console.BufferWidth)); // clear old prompt
+                Console.Write(new string(' ', Console.BufferWidth));
                 Console.SetCursorPosition(0, inputLine);
-                Console.Write("Choose item number to pack: ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write($"Choose item number to pack: {lastInput}");
+                Console.ResetColor();
                 
-                string input = Console.ReadLine() ?? "";
+                // move cursor after the prompt for fresh input
+                Console.SetCursorPosition("Choose item number to pack: ".Length + lastInput.Length, inputLine);
+                
+                string? input = Console.ReadLine();
+                Console.WriteLine(); // push messages below timer
+                lastInput = input ?? "";
                 
                 if (int.TryParse(input, out int choice) && itemMap.ContainsKey(choice))
                 {
@@ -372,7 +396,7 @@ class Program
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         int bonus = 10 + streak * 2;
-                        Console.WriteLine($" 🛍️ Packed {item} ✅ +{bonus} points");
+                        Console.WriteLine($" 🛍️  Packed {item} ✅ +{bonus} points");
                         Console.ResetColor();
                         score += bonus;
                         streak++;
@@ -381,7 +405,7 @@ class Program
                         if (streak > 1)
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"🔥 Streak x{streak}! Bonus active!");
+                            Console.WriteLine($" 🔥 Streak x{streak}! Bonus active!");
                             Console.ResetColor();
                         }
                     }
